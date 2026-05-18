@@ -51,31 +51,25 @@
 <textarea id="output" placeholder="Bangla output will show here"></textarea>
 <script>
 // 📚 Base dictionary (core words)
-const dict = {
+let dict = {
   "ami": "আমি",
   "tumi": "তুমি",
   "apni": "আপনি",
   "se": "সে",
   "amra": "আমরা",
 
-  "valo": "ভালো",
-  "bhalo": "ভালো",
-  "kharap": "খারাপ",
+  "ki": "কি",
+  "koro": "করো",
+  "kori": "করি",
+  "korchi": "করছি",
+  "korbo": "করবো",
 
+  "valo": "ভালো",
   "ase": "আছে",
   "nei": "নেই",
 
   "tomake": "তোমাকে",
-  "valobasi": "ভালোবাসি",
-  "bhalobasi": "ভালোবাসি",
-
-  "koro": "করো",
-  "khao": "খাও",
-  "jai": "যাই",
-  "jao": "যাও",
-
-  "bari": "বাড়ি",
-  "basha": "বাসা"
+  "valobasi": "ভালোবাসি"
 };
 
 // 🔧 Smart auto-fix rules
@@ -127,11 +121,10 @@ function findBest(word) {
 }
 
 // 🚀 main convert function
-function convert() {
-  let text = document.getElementById("input").value.toLowerCase();
-  let words = text.split(" ");
-
-  let result = words.map(word => {
+let result = words.map(word => {
+  word = word.toLowerCase();
+  return dict[word] || word;
+}).join(" ");
 
     // 1️⃣ auto fix spelling
     if (autoFix[word]) {
