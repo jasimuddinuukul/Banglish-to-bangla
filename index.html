@@ -49,76 +49,39 @@
 <button onclick="convert()">Convert</button><br>
 
 <textarea id="output" placeholder="Bangla output will show here"></textarea>
-
 <script>
-// 📚 BIG DICTIONARY
 let dict = {
   "ami": "আমি",
   "tumi": "তুমি",
-  "apni": "আপনি",
-  "se": "সে",
-  "amra": "আমরা",
-
+  "tomake": "তোমাকে",
   "valo": "ভালো",
-  "bhalo": "ভালো",
-  "kharap": "খারাপ",
-
   "ase": "আছে",
-  "nei": "নেই",
-
-  "koro": "করো",
-  "korchi": "করছি",
-  "korbo": "করবো",
-
-  "khao": "খাও",
-  "kha": "খা",
-
-  "jai": "যাই",
-  "jao": "যাও",
-
-  "bol": "বল",
-
   "valobasi": "ভালোবাসি",
   "bhalobasi": "ভালোবাসি",
-  "bhalobasha": "ভালোবাসা",
-
-  "bari": "বাড়ি",
-  "basha": "বাসা",
-  "bazar": "বাজার",
-  "kaj": "কাজ",
-
-  "vat": "ভাত",
-  "mach": "মাছ",
-  "murgi": "মুরগি",
-
-  "keno": "কেন",
-  "ki": "কি",
-  "kothay": "কোথায়",
-
-  "thik": "ঠিক",
-  "hobe": "হবে"
+  "koro": "করো",
+  "khao": "খাও",
+  "jai": "যাই",
+  "bari": "বাড়ি"
 };
 
-// 🔧 AUTO CORRECT
 let autoFix = {
   "tomaka": "tomake",
   "valobashe": "valobasi",
   "balobasi": "valobasi"
 };
 
-// 🚀 CONVERT FUNCTION
 function convert() {
   let text = document.getElementById("input").value.toLowerCase();
   let words = text.split(" ");
 
   let result = words.map(word => {
 
-    // step 1: auto fix
+    // 1️⃣ first fix spelling
     if (autoFix[word]) {
       word = autoFix[word];
     }
 
-    // step 2: dictionary match
+    // 2️⃣ then convert to Bangla
     if (dict[word]) {
       return dict[word];
     }
@@ -129,6 +92,5 @@ function convert() {
   document.getElementById("output").value = result;
 }
 </script>
-
 </body>
 </html>
