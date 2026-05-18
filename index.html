@@ -50,40 +50,103 @@
 
 <textarea id="output" placeholder="Bangla output will show here"></textarea>
 <script>
-let dict = {
+// 📚 Base dictionary (core words)
+const dict = {
   "ami": "আমি",
   "tumi": "তুমি",
-  "tomake": "তোমাকে",
+  "apni": "আপনি",
+  "se": "সে",
+  "amra": "আমরা",
+
   "valo": "ভালো",
+  "bhalo": "ভালো",
+  "kharap": "খারাপ",
+
   "ase": "আছে",
+  "nei": "নেই",
+
+  "tomake": "তোমাকে",
   "valobasi": "ভালোবাসি",
   "bhalobasi": "ভালোবাসি",
+
   "koro": "করো",
   "khao": "খাও",
   "jai": "যাই",
-  "bari": "বাড়ি"
+  "jao": "যাও",
+
+  "bari": "বাড়ি",
+  "basha": "বাসা"
 };
 
-let autoFix = {
+// 🔧 Smart auto-fix rules
+const autoFix = {
   "tomaka": "tomake",
+  "tomeke": "tomake",
+  "tomke": "tomake",
   "valobashe": "valobasi",
-  "balobasi": "valobasi"
+  "balobasi": "valobasi",
+  "bhalobashe": "valobasi",
+  "valoasi": "valobasi"
 };
 
+// 🧠 AI-style fuzzy match (simple distance)
+function distance(a, b) {
+  let dp = Array.from({ length: a.length + 1 }, () =>
+    Array(b.length + 1).fill(0)
+  );
+
+  for (let i = 0; i <= a.length; i++) dp[i][0] = i;
+  for (let j = 0; j <= b.length; j++) dp[0][j] = j;
+
+  for (let i = 1; i <= a.length; i++) {
+    for (let j = 1; j <= b.length; j++) {
+      let cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      dp[i][j] = Math.min(
+        dp[i - 1][j] + 1,
+        dp[i][j - 1] + 1,
+        dp[i - 1][j - 1] + cost
+      );
+    }
+  }
+  return dp[a.length][b.length];
+}
+
+// 🔍 find closest match
+function findBest(word) {
+  let best = word;
+  let min = 999;
+
+  for (let key in dict) {
+    let d = distance(word, key);
+    if (d < min && d <= 2) {
+      min = d;
+      best = key;
+    }
+  }
+  return best;
+}
+
+// 🚀 main convert function
 function convert() {
   let text = document.getElementById("input").value.toLowerCase();
   let words = text.split(" ");
 
   let result = words.map(word => {
 
-    // 1️⃣ first fix spelling
+    // 1️⃣ auto fix spelling
     if (autoFix[word]) {
       word = autoFix[word];
     }
 
-    // 2️⃣ then convert to Bangla
+    // 2️⃣ direct match
     if (dict[word]) {
       return dict[word];
+    }
+
+    // 3️⃣ smart AI match
+    let best = findBest(word);
+    if (dict[best]) {
+      return dict[best];
     }
 
     return word;
