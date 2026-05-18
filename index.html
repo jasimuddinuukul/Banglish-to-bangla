@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Banglish2Bangla</title>
+<style>
+  body { font-family: Arial; text-align: center; padding: 40px; }
+  textarea { width: 80%; height: 100px; font-size: 18px; margin: 10px; }
+  button { padding: 10px 20px; font-size: 16px; }
+</style>
+</head>
+<body>
+
+<h2>Banglish to Bangla Typing Tool</h2>
+
+<textarea id="input" placeholder="Type Banglish (valo ase)"></textarea><br>
+<button onclick="convert()">Convert</button><br>
+<textarea id="output" placeholder="Result will show here"></textarea>
+
+<script>
+function convert() {
+  let text = document.getElementById("input").value.toLowerCase();
+
+  let dict = {
+    "valo": "ভালো",
+    "ase": "আছে",
+    "ami": "আমি",
+    "tumi": "তুমি"
+  };
+
+  let words = text.split(" ");
+  let result = words.map(word => dict[word] || word).join(" ");
+
+  document.getElementById("output").value = result;
+}
+</script>
+
+</body>
+</html>
