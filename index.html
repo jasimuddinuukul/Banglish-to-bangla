@@ -1,161 +1,48 @@
 <!DOCTYPE html>
-<html lang="bn">
-<head>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    let history = JSON.parse(localStorage.getItem("voiceHistory")) || [];
 
-<title>Voice to Bangla Text</title>
+    let historyList = document.getElementById("historyList");
 
-<style>
+    historyList.innerHTML = "";
 
-body{
-  background:#121212;
-  color:white;
-  font-family:Arial;
-  text-align:center;
-  padding:20px;
-}
+    history.forEach(item => {
 
-h1{
-  color:#00ff99;
-}
+        historyList.innerHTML += `
+        <div class="history-item">
+            ${item}
+        </div>
+        `;
 
-textarea{
-
-  width:90%;
-  height:180px;
-
-  margin-top:20px;
-
-  padding:15px;
-
-  border:none;
-  border-radius:10px;
-
-  font-size:20px;
-
-  background:#1e1e1e;
-  color:white;
+    });
 
 }
 
-button{
+loadHistory();
 
-  padding:14px 20px;
-
-  margin:10px;
-
-  border:none;
-  border-radius:10px;
-
-  font-size:18px;
-
-  cursor:pointer;
-
-  background:#00aa66;
-  color:white;
-
+// 📤 Share Functions
+function getText(){
+    return encodeURIComponent(document.getElementById("output").value);
 }
 
-button:hover{
-  background:#008844;
-}
-
-@media(max-width:600px){
-
-  textarea{
-    width:95%;
-    font-size:18px;
-  }
-
-  button{
-    width:90%;
-  }
-
-}
-
-</style>
-</head>
-
-<body>
-
-<h1>🎤 Voice to Bangla Text</h1>
-
-<p>Speak in Bangla and get instant Bangla text</p>
-
-<button onclick="startVoice()">
-🎤 Start Voice Typing
-</button>
-
-<button onclick="copyText()">
-📋 Copy Text
-</button>
-
-<button onclick="shareWhatsApp()">
-📤 WhatsApp Share
-</button>
-
-<br>
-
-<textarea
-id="output"
-placeholder="Your Bangla text will appear here..."
-></textarea>
-
-<script>
-
-// 🎤 Voice Recognition
-function startVoice(){
-
-  const recognition =
-    new webkitSpeechRecognition();
-
-  // 🇧🇩 Bangla language
-  recognition.lang = "bn-BD";
-
-  recognition.continuous = false;
-
-  recognition.interimResults = false;
-
-  recognition.onresult = function(event){
-
-    let text =
-      event.results[0][0].transcript;
-
-    document.getElementById("output").value =
-      text;
-
-  };
-
-  recognition.start();
-
-}
-
-// 📋 Copy
-function copyText(){
-
-  let text =
-    document.getElementById("output");
-
-  navigator.clipboard.writeText(text.value);
-
-  alert("Copied Successfully!");
-
-}
-
-// 📤 WhatsApp Share
 function shareWhatsApp(){
+    window.open(`https://wa.me/?text=${getText()}`,'_blank');
+}
 
-  let text =
-    document.getElementById("output").value;
+function shareFacebook(){
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=&quote=${getText()}`,'_blank');
+}
 
-  let url =
-    "https://wa.me/?text=" +
-    encodeURIComponent(text);
+function shareMessenger(){
+    window.open(`fb-messenger://share/?link=${getText()}`,'_blank');
+}
 
-  window.open(url, "_blank");
+function shareTelegram(){
+    window.open(`https://t.me/share/url?text=${getText()}`,'_blank');
+}
 
+function shareTwitter(){
+    window.open(`https://twitter.com/intent/tweet?text=${getText()}`,'_blank');
 }
 
 </script>
