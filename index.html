@@ -1,48 +1,408 @@
 <!DOCTYPE html>
+<html lang="bn">
 
-    let history = JSON.parse(localStorage.getItem("voiceHistory")) || [];
+<head>
 
-    let historyList = document.getElementById("historyList");
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Voice to Bangla Text Pro</title>
+
+<!-- Font Awesome Icons -->
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+
+body{
+    margin:0;
+    padding:20px;
+    background:#121212;
+    color:white;
+    font-family:Arial;
+    text-align:center;
+}
+
+.container{
+    max-width:900px;
+    margin:auto;
+}
+
+h1{
+    color:#00ff99;
+}
+
+p{
+    color:#cccccc;
+}
+
+textarea{
+
+    width:95%;
+    height:220px;
+
+    padding:15px;
+    margin-top:20px;
+
+    border:none;
+    border-radius:12px;
+
+    background:#1e1e1e;
+    color:white;
+
+    font-size:20px;
+
+    resize:none;
+}
+
+.buttons{
+
+    margin-top:20px;
+
+}
+
+button{
+
+    padding:14px 20px;
+    margin:8px;
+
+    border:none;
+    border-radius:10px;
+
+    background:#00aa66;
+    color:white;
+
+    font-size:16px;
+
+    cursor:pointer;
+}
+
+button:hover{
+    background:#008844;
+}
+
+.social-icons{
+    margin-top:20px;
+}
+
+.social-icons button{
+
+    width:55px;
+    height:55px;
+
+    border-radius:50%;
+
+    font-size:22px;
+}
+
+.history{
+
+    margin-top:30px;
+
+    background:#1e1e1e;
+
+    padding:15px;
+
+    border-radius:10px;
+
+    text-align:left;
+}
+
+.history h3{
+    color:#00ff99;
+}
+
+.history-item{
+
+    background:#2a2a2a;
+
+    padding:10px;
+
+    margin:10px 0;
+
+    border-radius:8px;
+}
+
+.footer{
+
+    margin-top:30px;
+
+    color:#888;
+}
+
+@media(max-width:600px){
+
+    textarea{
+        width:95%;
+        font-size:18px;
+        height:200px;
+    }
+
+    button{
+        width:90%;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🎤 Voice to Bangla Text Pro</h1>
+
+<p>Speak Bangla → Get Bangla Text Instantly</p>
+
+<textarea
+id="output"
+placeholder="Your Bangla text will appear here...">
+</textarea>
+
+<div class="buttons">
+
+<button onclick="startVoice()">
+<i class="fa-solid fa-microphone"></i>
+Start Voice Typing
+</button>
+
+<button onclick="copyText()">
+<i class="fa-solid fa-copy"></i>
+Copy
+</button>
+
+<button onclick="downloadPDF()">
+<i class="fa-solid fa-file-pdf"></i>
+PDF
+</button>
+
+<button onclick="clearText()">
+<i class="fa-solid fa-trash"></i>
+Clear
+</button>
+
+</div>
+
+<div class="social-icons">
+
+<button onclick="shareWhatsApp()">
+<i class="fa-brands fa-whatsapp"></i>
+</button>
+
+<button onclick="shareFacebook()">
+<i class="fa-brands fa-facebook-f"></i>
+</button>
+
+<button onclick="shareTelegram()">
+<i class="fa-brands fa-telegram"></i>
+</button>
+
+<button onclick="shareTwitter()">
+<i class="fa-brands fa-x-twitter"></i>
+</button>
+
+</div>
+
+<div class="history">
+
+<h3>🕘 Saved History</h3>
+
+<div id="historyList"></div>
+
+</div>
+
+<div class="footer">
+
+Made with ❤️ for Bangladesh
+
+</div>
+
+</div>
+
+<!-- PDF Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+
+// 🎤 Voice Typing
+function startVoice(){
+
+    const recognition =
+        new webkitSpeechRecognition();
+
+    recognition.lang = "bn-BD";
+
+    recognition.continuous = false;
+
+    recognition.interimResults = false;
+
+    recognition.onresult = function(event){
+
+        let text =
+            event.results[0][0].transcript;
+
+        // ✨ Auto punctuation
+        text = autoPunctuation(text);
+
+        document.getElementById("output").value =
+            text;
+
+        saveHistory(text);
+
+    };
+
+    recognition.start();
+
+}
+
+// ✨ Auto punctuation
+function autoPunctuation(text){
+
+    if(!text.endsWith("।")){
+
+        text += "।";
+
+    }
+
+    return text;
+}
+
+// 📋 Copy
+function copyText(){
+
+    let text =
+        document.getElementById("output");
+
+    navigator.clipboard.writeText(text.value);
+
+    alert("Copied Successfully!");
+
+}
+
+// 🗑️ Clear
+function clearText(){
+
+    document.getElementById("output").value = "";
+
+}
+
+// 📄 PDF Export
+async function downloadPDF(){
+
+    const { jsPDF } = window.jspdf;
+
+    const doc = new jsPDF();
+
+    let text =
+        document.getElementById("output").value;
+
+    doc.text(text, 10, 20);
+
+    doc.save("Bangla-Voice-Text.pdf");
+
+}
+
+// 💾 Save History
+function saveHistory(text){
+
+    let history =
+        JSON.parse(
+            localStorage.getItem("voiceHistory")
+        ) || [];
+
+    history.unshift(text);
+
+    if(history.length > 10){
+
+        history.pop();
+
+    }
+
+    localStorage.setItem(
+        "voiceHistory",
+        JSON.stringify(history)
+    );
+
+    loadHistory();
+
+}
+
+// 📜 Load History
+function loadHistory(){
+
+    let history =
+        JSON.parse(
+            localStorage.getItem("voiceHistory")
+        ) || [];
+
+    let historyList =
+        document.getElementById("historyList");
 
     historyList.innerHTML = "";
 
-    history.forEach(item => {
+    history.forEach(function(item){
 
-        historyList.innerHTML += `
-        <div class="history-item">
-            ${item}
-        </div>
-        `;
+        historyList.innerHTML +=
+        '<div class="history-item">' +
+        item +
+        '</div>';
 
     });
 
 }
 
+// Load history on page start
 loadHistory();
 
-// 📤 Share Functions
+// 📤 Get Text
 function getText(){
-    return encodeURIComponent(document.getElementById("output").value);
+
+    return encodeURIComponent(
+        document.getElementById("output").value
+    );
+
 }
 
+// 📤 WhatsApp
 function shareWhatsApp(){
-    window.open(`https://wa.me/?text=${getText()}`,'_blank');
+
+    window.open(
+        'https://wa.me/?text=' + getText(),
+        '_blank'
+    );
+
 }
 
+// 📤 Facebook
 function shareFacebook(){
-    window.open(`https://www.facebook.com/sharer/sharer.php?u=&quote=${getText()}`,'_blank');
+
+    window.open(
+        'https://www.facebook.com/sharer/sharer.php?quote=' + getText(),
+        '_blank'
+    );
+
 }
 
-function shareMessenger(){
-    window.open(`fb-messenger://share/?link=${getText()}`,'_blank');
-}
-
+// 📤 Telegram
 function shareTelegram(){
-    window.open(`https://t.me/share/url?text=${getText()}`,'_blank');
+
+    window.open(
+        'https://t.me/share/url?text=' + getText(),
+        '_blank'
+    );
+
 }
 
+// 📤 Twitter / X
 function shareTwitter(){
-    window.open(`https://twitter.com/intent/tweet?text=${getText()}`,'_blank');
+
+    window.open(
+        'https://twitter.com/intent/tweet?text=' + getText(),
+        '_blank'
+    );
+
 }
 
 </script>
