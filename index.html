@@ -50,103 +50,70 @@
 
 <textarea id="output" placeholder="Bangla output will show here"></textarea>
 <script>
-// 📚 Base dictionary (core words)
-let dict = {
+// 📚 Dictionary
+const dict = {
   "ami": "আমি",
   "tumi": "তুমি",
   "apni": "আপনি",
   "se": "সে",
-  "amra": "আমরা",
 
   "ki": "কি",
   "koro": "করো",
   "kori": "করি",
   "korchi": "করছি",
-  "korbo": "করবো",
 
   "valo": "ভালো",
+  "bhalo": "ভালো",
+
   "ase": "আছে",
-  "nei": "নেই",
+  "ache": "আছে",
 
   "tomake": "তোমাকে",
-  "valobasi": "ভালোবাসি"
+
+  "valobasi": "ভালোবাসি",
+  "bhalobasi": "ভালোবাসি",
+
+  "jai": "যাই",
+  "jao": "যাও",
+
+  "bari": "বাড়ি",
+  "basha": "বাসা"
 };
 
-// 🔧 Smart auto-fix rules
+// 🔧 Auto fix
 const autoFix = {
   "tomaka": "tomake",
   "tomeke": "tomake",
-  "tomke": "tomake",
-  "valobashe": "valobasi",
-  "balobasi": "valobasi",
-  "bhalobashe": "valobasi",
-  "valoasi": "valobasi"
+  "balobasi": "valobasi"
 };
 
-// 🧠 AI-style fuzzy match (simple distance)
-function distance(a, b) {
-  let dp = Array.from({ length: a.length + 1 }, () =>
-    Array(b.length + 1).fill(0)
-  );
+// 🚀 Convert function
+function convert() {
 
-  for (let i = 0; i <= a.length; i++) dp[i][0] = i;
-  for (let j = 0; j <= b.length; j++) dp[0][j] = j;
+  let text = document.getElementById("input").value.toLowerCase();
 
-  for (let i = 1; i <= a.length; i++) {
-    for (let j = 1; j <= b.length; j++) {
-      let cost = a[i - 1] === b[j - 1] ? 0 : 1;
-      dp[i][j] = Math.min(
-        dp[i - 1][j] + 1,
-        dp[i][j - 1] + 1,
-        dp[i - 1][j - 1] + cost
-      );
-    }
-  }
-  return dp[a.length][b.length];
-}
+  let words = text.split(" ");
 
-// 🔍 find closest match
-function findBest(word) {
-  let best = word;
-  let min = 999;
+  let result = words.map(word => {
 
-  for (let key in dict) {
-    let d = distance(word, key);
-    if (d < min && d <= 2) {
-      min = d;
-      best = key;
-    }
-  }
-  return best;
-}
-
-// 🚀 main convert function
-let result = words.map(word => {
-  word = word.toLowerCase();
-  return dict[word] || word;
-}).join(" ");
-
-    // 1️⃣ auto fix spelling
+    // auto fix first
     if (autoFix[word]) {
       word = autoFix[word];
     }
 
-    // 2️⃣ direct match
+    // dictionary convert
     if (dict[word]) {
       return dict[word];
     }
 
-    // 3️⃣ smart AI match
-    let best = findBest(word);
-    if (dict[best]) {
-      return dict[best];
-    }
-
+    // not found
     return word;
+
   }).join(" ");
 
   document.getElementById("output").value = result;
 }
+
 </script>
 </body>
 </html>
