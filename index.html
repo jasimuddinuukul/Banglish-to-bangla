@@ -1,42 +1,70 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Banglish2Bangla</title>
 
 <style>
-  body {
-    font-family: Arial;
-    text-align: center;
-    padding: 30px;
-    background: #f5f5f5;
+
+body{
+  background:#121212;
+  color:white;
+  font-family:Arial;
+  text-align:center;
+  padding:20px;
+}
+
+h2{
+  color:#00ff99;
+}
+
+p{
+  color:#cccccc;
+}
+
+textarea{
+  width:90%;
+  height:120px;
+  margin:10px;
+  padding:10px;
+  border:none;
+  border-radius:10px;
+  font-size:18px;
+  background:#1e1e1e;
+  color:white;
+}
+
+button{
+  padding:12px 20px;
+  margin:5px;
+  border:none;
+  border-radius:8px;
+  background:#00aa66;
+  color:white;
+  font-size:16px;
+  cursor:pointer;
+}
+
+button:hover{
+  background:#008844;
+}
+
+/* 📱 Mobile Responsive */
+@media(max-width:600px){
+
+  textarea{
+    width:95%;
+    font-size:16px;
   }
 
-  h2 {
-    color: #333;
+  button{
+    width:90%;
   }
 
-  textarea {
-    width: 85%;
-    height: 120px;
-    font-size: 18px;
-    margin: 10px;
-    padding: 10px;
-  }
+}
 
-  button {
-    padding: 10px 25px;
-    font-size: 16px;
-    cursor: pointer;
-    background: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-  }
-
-  button:hover {
-    background: #0056b3;
-  }
 </style>
 </head>
 
@@ -44,76 +72,159 @@
 
 <h2>Banglish to Bangla Typing Tool ⚡</h2>
 
-<textarea id="input" placeholder="Type Banglish (ami tomake valobasi)"></textarea><br>
+<p>Type Banglish and get instant Bangla output</p>
 
-<button onclick="convert()">Convert</button><br>
+<textarea
+id="input"
+placeholder="Type Banglish here...">
+</textarea>
 
-<textarea id="output" placeholder="Bangla output will show here"></textarea>
+<br>
+
+<button onclick="startVoice()">🎤 Voice Typing</button>
+
+<button onclick="copyText()">📋 Copy</button>
+
+<br>
+
+<textarea
+id="output"
+placeholder="Bangla output will appear here..."
+readonly>
+</textarea>
+
 <script>
-// 📚 Dictionary
+
+// 📚 BIG DICTIONARY
 const dict = {
-  "ami": "আমি",
-  "tumi": "তুমি",
-  "apni": "আপনি",
-  "se": "সে",
 
-  "ki": "কি",
-  "koro": "করো",
-  "kori": "করি",
-  "korchi": "করছি",
+  "ami":"আমি",
+  "tumi":"তুমি",
+  "apni":"আপনি",
+  "se":"সে",
+  "amra":"আমরা",
 
-  "valo": "ভালো",
-  "bhalo": "ভালো",
+  "ki":"কি",
+  "keno":"কেন",
+  "kothay":"কোথায়",
 
-  "ase": "আছে",
-  "ache": "আছে",
+  "valo":"ভালো",
+  "bhalo":"ভালো",
+  "kharap":"খারাপ",
 
-  "tomake": "তোমাকে",
+  "ase":"আছে",
+  "ache":"আছে",
+  "nai":"নাই",
 
-  "valobasi": "ভালোবাসি",
-  "bhalobasi": "ভালোবাসি",
+  "tomake":"তোমাকে",
+  "amake":"আমাকে",
 
-  "jai": "যাই",
-  "jao": "যাও",
+  "valobasi":"ভালোবাসি",
+  "bhalobasi":"ভালোবাসি",
+  "valobaso":"ভালোবাসো",
 
-  "bari": "বাড়ি",
-  "basha": "বাসা"
+  "koro":"করো",
+  "kori":"করি",
+  "korchi":"করছি",
+
+  "jai":"যাই",
+  "jao":"যাও",
+
+  "bari":"বাড়ি",
+  "basha":"বাসা",
+
+  "khabar":"খাবার",
+  "vat":"ভাত",
+  "mach":"মাছ",
+
+  "allah":"আল্লাহ",
+  "alhamdulillah":"আলহামদুলিল্লাহ"
+
 };
 
-// 🔧 Auto fix
+// 🔧 AUTO FIX
 const autoFix = {
-  "tomaka": "tomake",
-  "tomeke": "tomake",
-  "balobasi": "valobasi"
+
+  "tomaka":"tomake",
+  "amaka":"amake",
+
+  "balobasi":"valobasi",
+  "balobaso":"valobaso",
+
+  "tomeke":"tomake"
+
 };
 
-// 🚀 Convert function
-function convert() {
+// ⚡ LIVE CONVERT
+function convertLive(){
 
-  let text = document.getElementById("input").value.toLowerCase();
+  let text =
+    document.getElementById("input")
+    .value
+    .toLowerCase();
 
   let words = text.split(" ");
 
   let result = words.map(word => {
 
-    // auto fix first
-    if (autoFix[word]) {
+    // auto fix
+    if(autoFix[word]){
       word = autoFix[word];
     }
 
     // dictionary convert
-    if (dict[word]) {
+    if(dict[word]){
       return dict[word];
     }
 
-    // not found
+    // default
     return word;
 
   }).join(" ");
 
-  document.getElementById("output").value = result;
+  document.getElementById("output").value =
+    result;
+}
+
+// 🚀 LIVE TYPING
+document
+.getElementById("input")
+.addEventListener("input", convertLive);
+
+// 📋 COPY BUTTON
+function copyText(){
+
+  let output =
+    document.getElementById("output");
+
+  navigator.clipboard.writeText(output.value);
+
+  alert("Copied Successfully!");
+
+}
+
+// 🎤 VOICE TYPING
+function startVoice(){
+
+  const recognition =
+    new webkitSpeechRecognition();
+
+  recognition.lang = "en-US";
+
+  recognition.onresult = function(event){
+
+    document.getElementById("input").value =
+      event.results[0][0].transcript;
+
+    convertLive();
+
+  };
+
+  recognition.start();
+
 }
 
 </script>
+
 </body>
 </html>
