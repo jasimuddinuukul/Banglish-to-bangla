@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Banglish2Bangla</title>
+<title>Voice to Bangla Text</title>
 
 <style>
 
@@ -16,47 +17,56 @@ body{
   padding:20px;
 }
 
-h2{
+h1{
   color:#00ff99;
 }
 
-p{
-  color:#cccccc;
-}
-
 textarea{
+
   width:90%;
-  height:120px;
-  margin:10px;
-  padding:10px;
+  height:180px;
+
+  margin-top:20px;
+
+  padding:15px;
+
   border:none;
   border-radius:10px;
-  font-size:18px;
+
+  font-size:20px;
+
   background:#1e1e1e;
   color:white;
+
 }
 
 button{
-  padding:12px 20px;
-  margin:5px;
+
+  padding:14px 20px;
+
+  margin:10px;
+
   border:none;
-  border-radius:8px;
+  border-radius:10px;
+
+  font-size:18px;
+
+  cursor:pointer;
+
   background:#00aa66;
   color:white;
-  font-size:16px;
-  cursor:pointer;
+
 }
 
 button:hover{
   background:#008844;
 }
 
-/* 📱 Mobile Responsive */
 @media(max-width:600px){
 
   textarea{
     width:95%;
-    font-size:16px;
+    font-size:18px;
   }
 
   button{
@@ -70,157 +80,81 @@ button:hover{
 
 <body>
 
-<h2>Banglish to Bangla Typing Tool ⚡</h2>
+<h1>🎤 Voice to Bangla Text</h1>
 
-<p>Type Banglish and get instant Bangla output</p>
+<p>Speak in Bangla and get instant Bangla text</p>
 
-<textarea
-id="input"
-placeholder="Type Banglish here...">
-</textarea>
+<button onclick="startVoice()">
+🎤 Start Voice Typing
+</button>
 
-<br>
+<button onclick="copyText()">
+📋 Copy Text
+</button>
 
-<button onclick="startVoice()">🎤 Voice Typing</button>
-
-<button onclick="copyText()">📋 Copy</button>
+<button onclick="shareWhatsApp()">
+📤 WhatsApp Share
+</button>
 
 <br>
 
 <textarea
 id="output"
-placeholder="Bangla output will appear here..."
-readonly>
-</textarea>
+placeholder="Your Bangla text will appear here..."
+></textarea>
 
 <script>
 
-// 📚 BIG DICTIONARY
-const dict = {
-
-  "ami":"আমি",
-  "tumi":"তুমি",
-  "apni":"আপনি",
-  "se":"সে",
-  "amra":"আমরা",
-
-  "ki":"কি",
-  "keno":"কেন",
-  "kothay":"কোথায়",
-
-  "valo":"ভালো",
-  "bhalo":"ভালো",
-  "kharap":"খারাপ",
-
-  "ase":"আছে",
-  "ache":"আছে",
-  "nai":"নাই",
-
-  "tomake":"তোমাকে",
-  "amake":"আমাকে",
-
-  "valobasi":"ভালোবাসি",
-  "bhalobasi":"ভালোবাসি",
-  "valobaso":"ভালোবাসো",
-
-  "koro":"করো",
-  "kori":"করি",
-  "korchi":"করছি",
-
-  "jai":"যাই",
-  "jao":"যাও",
-
-  "bari":"বাড়ি",
-  "basha":"বাসা",
-
-  "khabar":"খাবার",
-  "vat":"ভাত",
-  "mach":"মাছ",
-
-  "allah":"আল্লাহ",
-  "alhamdulillah":"আলহামদুলিল্লাহ"
-
-};
-
-// 🔧 AUTO FIX
-const autoFix = {
-
-  "tomaka":"tomake",
-  "amaka":"amake",
-
-  "balobasi":"valobasi",
-  "balobaso":"valobaso",
-
-  "tomeke":"tomake"
-
-};
-
-// ⚡ LIVE CONVERT
-function convertLive(){
-
-  let text =
-    document.getElementById("input")
-    .value
-    .toLowerCase();
-
-  let words = text.split(" ");
-
-  let result = words.map(word => {
-
-    // auto fix
-    if(autoFix[word]){
-      word = autoFix[word];
-    }
-
-    // dictionary convert
-    if(dict[word]){
-      return dict[word];
-    }
-
-    // default
-    return word;
-
-  }).join(" ");
-
-  document.getElementById("output").value =
-    result;
-}
-
-// 🚀 LIVE TYPING
-document
-.getElementById("input")
-.addEventListener("input", convertLive);
-
-// 📋 COPY BUTTON
-function copyText(){
-
-  let output =
-    document.getElementById("output");
-
-  navigator.clipboard.writeText(output.value);
-
-  alert("Copied Successfully!");
-
-}
-
-// 🎤 VOICE TYPING
+// 🎤 Voice Recognition
 function startVoice(){
 
   const recognition =
     new webkitSpeechRecognition();
 
-  recognition.lang = "en-US";
+  // 🇧🇩 Bangla language
+  recognition.lang = "bn-BD";
+
+  recognition.continuous = false;
+
+  recognition.interimResults = false;
 
   recognition.onresult = function(event){
 
-    document.getElementById("input").value =
+    let text =
       event.results[0][0].transcript;
 
-    convertLive();
+    document.getElementById("output").value =
+      text;
 
   };
 
   recognition.start();
+
+}
+
+// 📋 Copy
+function copyText(){
+
+  let text =
+    document.getElementById("output");
+
+  navigator.clipboard.writeText(text.value);
+
+  alert("Copied Successfully!");
+
+}
+
+// 📤 WhatsApp Share
+function shareWhatsApp(){
+
+  let text =
+    document.getElementById("output").value;
+
+  let url =
+    "https://wa.me/?text=" +
+    encodeURIComponent(text);
+
+  window.open(url, "_blank");
 
 }
 
